@@ -36,7 +36,7 @@ fi
 tmpfile="/tmp/$(basename $1)"
 wget "$1" -O "$tmpfile"
 if [ "$?" -ne 0 ]; then
-	echo "Can't fetch YouTube file"
+	echo "Error: Can't fetch YouTube file"
 	exit 2
 fi
 title=$(cat "$tmpfile" | grep -o '<span id="eow-title".*>' | getvar title)
@@ -48,12 +48,12 @@ if [ -z "$2" ]; then
 else
 	link=$(echo $fmt_url_map | sed 's/.*,'"$fmt_code"'%7C/'"$fmt_code"'%7C/' | sed 's/.*'"$fmt_code"'%7C//' | sed 's/%2C.*//' | urldecode)
 	if [ -z "$link" ]; then
-		echo "Error: video doesn't have this format"
+		echo "Error: Video doesn't have this format"
 		exit 3
 	fi
 fi
 wget "$link" -O "$title.$(fmt_ext $fmt_code)"
 if [ "$?" -ne 0 ]; then
-	echo "Can't fetch video file"
+	echo "Error: Can't fetch video file"
 	exit 4
 fi
