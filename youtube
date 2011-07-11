@@ -1,0 +1,59 @@
+#!/bin/bash
+
+function getvar {
+	sed 's/.*'"$1"'="//' | sed 's/".*//'
+}
+
+function getflashvar {
+	sed 's/.*'"$1"'=//' | sed 's/\&amp;.*//'
+}
+
+function urldecode {
+	sed 's/%252C/,/g' | sed 's/%26/\&/g' | sed 's/%2C/,/g' | sed 's/%2F/\//g' | sed 's/%3A/:/g' | sed 's/%3D/=/g' | sed 's/%3F/?/g' | sed 's/%7C/|/g'
+}
+
+function fmt_ext {
+	if [ "$1" = "37" ] || [ "$1" = "22" ]; then echo mp4
+	else echo flv; fi
+}
+
+if [ -z "$1" ]; then
+	echo "YouTube Downloader 0.1 by Ronnie-A"
+	echo "Usage: youtube LINK [FORMAT]"
+	exit 0
+fi
+if [ "$2" ]; then
+	if [ "$2" = "1080" ]; then fmt_code=37
+	else if [ "$2" = "720" ]; then fmt_code=22
+	else if [ "$2" = "480" ]; then fmt_code=35
+	else if [ "$2" = "360" ]; then fmt_code=34
+	else if [ "$2" = "240" ]; then fmt_code=5
+	else
+		echo "Error: Incorrect format"
+		exit 1
+	fi; fi; fi; fi; fi
+fi
+tmpfile="/tmp/$(basename $1)"
+wget "$1" -O "$tmpfile"
+if [ "$?" -ne 0 ]; then
+	echo "Can't fetch YouTube file"
+	exit 2
+fi
+title=$(cat "$tmpfile" | grep -o '<span id="eow-title".*>' | getvar title)
+fmt_url_map=$(cat "$tmpfile" | grep -o '<embed.*id="movie_player".*>' | getvar flashvars | getflashvar fmt_url_map)
+rm "$tmpfile"
+if [ -z "$2" ]; then
+	fmt_code=$(echo $fmt_url_map | sed 's/%7C.*//')
+	link=$(echo $fmt_url_map | sed 's/%2C.*//' | sed 's/.*%7C//' | urldecode)
+else
+	link=$(echo $fmt_url_map | sed 's/.*,'"$fmt_code"'%7C/'"$fmt_code"'%7C/' | sed 's/.*'"$fmt_code"'%7C//' | sed 's/%2C.*//' | urldecode)
+	if [ -z "$link" ]; then
+		echo "Error: video doesn't have this format"
+		exit 3
+	fi
+fi
+wget "$link" -O "$title.$(fmt_ext $fmt_code)"
+if [ "$?" -ne 0 ]; then
+	echo "Can't fetch video file"
+	exit 4
+fi
