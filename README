@@ -1,32 +1,49 @@
-
-======================================
-  YouTube Downloader 0.1 by Ronnie-A
-======================================
+================================
+  Downloader 0.1.1 by Ronnie-A
+================================
 
 
 About
 -----
 
-  This is a very simple tool to download videos from YouTube.
+  This is set of very simple tools to download videos and data from YouTube.com and Railscasts.com.
 
 
 Dependencies
 ------------
 
-  YouTube Downloader depends on bash, coreutils, grep, sed and wget.
+  Downloader depends on bash, coreutils, grep, sed and wget.
 
 
 Usage
 -----
 
-  To use YouTube Downloader, type
+  To download video from YouTube.com, type
 
     $ youtube LINK [FORMAT]
 
-in your console. LINK is a link to YouTube video (for example, http://www.youtube.com/watch?v=dQw4w9WgXcQ) and FORMAT is a video format or quality (for example, 720, 360). If FORMAT is not specified, the best available format will be downloaded.
+in your console. This will download YouTube video to current directory. LINK is a link to YouTube video (for example, http://www.youtube.com/watch?v=dQw4w9WgXcQ) and FORMAT is a video format or quality (for example, 720, 360). If FORMAT is not specified, the best available format will be downloaded.
+
+  To download data from Railscasts.com, type
+
+    $ railscasts
+
+in your console. This will download all data, i. e. sources and videos in all available formats, to current directory and also create a directory tree for usability.
 
 
 Feedback
 --------
 
-  If you have any comments of suggestions, please send them to ronnie-mail@yandex.ru or pull a request to https://github.com/Ronnie-A/YouTube-Downloader/pulls.
+  If you have any comments of suggestions, please send them to ronnie-mail@yandex.ru or pull a request to https://github.com/Ronnie-A/Downloader/pulls.
+
+
+Changelog
+---------
+
+  0.1.1:
+    The project renamed from "YouTube Downloader" to "Downloader".
+    Added tool for downloading data from Railscasts.com.
+
+  0.1:
+    First version as "YouTube Downloader".
+    Added tool for downloading videos from YouTube.com.
