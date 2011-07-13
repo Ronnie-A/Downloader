@@ -1,0 +1,37 @@
+#!/bin/bash
+
+function getlink {
+	sed 's/.*href="//' | sed 's/".*//'
+}
+
+function getdatalink {
+	grep -o '<a.*>'"$1"'</a>' | getlink
+}
+
+function fetchdata {
+	wget "$1" -O "$linkdir/$(basename $1)" -c
+}
+
+index=http://railscasts.com
+nextpage=/
+tmpfile=/tmp/railscasts
+datatypes=( "source code" "mp4" "m4v" "webm" "ogv" )
+datatypescount=${#datatypes[@]}
+
+while [ -n "$nextpage" ]; do
+	wget "$index$nextpage" -O "$tmpfile"
+	links=$( cat "$tmpfile" | grep -o '<h2><a.*>.*</a></h2>' | getlink )
+	nextpage=$( cat "$tmpfile" | grep -o '<a class="next_page".*">' | getlink )
+	rm "$tmpfile"
+	for link in $links; do
+		wget "$index$link" -O "$tmpfile"
+		pagelinks=$( cat "$tmpfile" | grep -o '<a href=".*">.*</a>' )
+		rm "$tmpfile"
+		linkdir=$( basename $link )
+		mkdir -p "$linkdir"
+		for i in $( seq 0 $(( $datatypescount - 1 )) ); do
+			datalink=$( echo $pagelinks | getdatalink "${datatypes[$i]}" )
+			if [ -n "$datalink" ]; then fetchdata "$datalink"; fi
+		done
+	done
+done
