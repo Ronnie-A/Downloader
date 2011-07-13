@@ -18,7 +18,7 @@ function fmt_ext {
 }
 
 if [ -z "$1" ]; then
-	echo "YouTube Downloader 0.1 by Ronnie-A"
+	echo "YouTube Downloader 0.1.1 by Ronnie-A"
 	echo "Usage: youtube LINK [FORMAT]"
 	exit 0
 fi
